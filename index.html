@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#17221d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Take 5">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <title>Take 5 Scorekeeper</title>
+  <style>
+    :root{color-scheme:dark;--bg:#101713;--panel:#1b2821;--panel2:#24332a;--line:#34463a;--text:#f4f5ef;--muted:#b4c0b6;--accent:#b7dc8b;--danger:#ff9c8f}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 16px calc(24px + env(safe-area-inset-bottom));}
+    main{max-width:680px;margin:0 auto}.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0 14px}.brand{font-size:25px;font-weight:800;letter-spacing:-.7px}.sub{color:var(--muted);font-size:13px;margin-top:3px}
+    .pill{border:1px solid var(--line);border-radius:999px;padding:7px 10px;color:var(--accent);font-size:12px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0}
+    h2{font-size:17px;margin:0 0 12px}label{display:block;color:var(--muted);font-size:13px;margin:10px 0 6px}
+    input,select,button{font:inherit}input,select{width:100%;background:#111a15;border:1px solid var(--line);border-radius:11px;color:var(--text);padding:12px;min-height:46px}
+    button{border:0;border-radius:12px;padding:12px 15px;background:var(--accent);color:#172117;font-weight:750;min-height:44px}
+    button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}button.danger{background:#492923;color:#ffd9d3}
+    button:disabled{opacity:.4}.row{display:flex;gap:9px;align-items:center}.row>*{flex:1}.row .fit{flex:0 0 auto}
+    .players{display:grid;gap:8px}.player{display:grid;grid-template-columns:1fr 86px 42px;gap:8px;align-items:center}.player input{min-width:0}.player button{padding:8px}
+    .scorehead{display:flex;justify-content:space-between;align-items:center}.score{font-size:27px;font-weight:800;font-variant-numeric:tabular-nums}.rank{color:var(--muted);font-size:12px}
+    .status{font-size:11px;color:var(--danger);font-weight:800;letter-spacing:.4px}.winner{color:var(--accent)}
+    .round{border-top:1px solid var(--line);padding:11px 0}.round:first-child{border-top:0}.roundtitle{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin-bottom:8px}
+    .roundentry{display:grid;grid-template-columns:1fr 82px;gap:10px;align-items:center;margin:7px 0}.roundentry input{padding:9px;min-height:40px}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.note{font-size:12px;color:var(--muted);line-height:1.45}.hidden{display:none!important}
+    .empty{color:var(--muted);text-align:center;padding:22px 8px}.foot{color:var(--muted);font-size:11px;text-align:center;padding:18px 0}
+    @media(min-width:560px){.scoresgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.scoresgrid .card{margin:0}}
+  </style>
+</head>
+<body>
+<main>
+  <header class="top">
+    <div><div class="brand">TAKE <span style="color:var(--accent)">5</span></div><div class="sub">Scorekeeper · lokaal op dit apparaat</div></div>
+    <div class="pill" id="connection">Offline klaar</div>
+  </header>
+
+  <section class="card" id="setup">
+    <h2>Nieuw spel instellen</h2>
+    <label for="names">Spelersnamen (één per regel)</label>
+    <textarea id="names" rows="4" style="width:100%;background:#111a15;border:1px solid var(--line);border-radius:11px;color:var(--text);padding:12px;font:inherit" placeholder="Dennis&#10;Lisa&#10;Mark&#10;Sophie"></textarea>
+    <div class="row">
+      <div><label for="limit">Puntenlimiet</label><input id="limit" type="number" min="1" value="66"></div>
+      <div><label for="mode">Spelmodus</label><select id="mode"><option value="out">Afvalmodus</option><option value="win">Winmodus</option></select></div>
+    </div>
+    <p class="note">Afvalmodus: speler ligt eruit bij het bereiken van de limiet. Winmodus: de eerste speler die de limiet bereikt, wint.</p>
+    <button id="start" style="width:100%;margin-top:8px">Start nieuw spel</button>
+  </section>
+
+  <section id="game" class="hidden">
+    <section class="card">
+      <div class="scorehead"><div><h2 style="margin:0">Tussenstand</h2><div class="sub" id="gameinfo"></div></div><button class="secondary fit" id="editSetup">Instellingen</button></div>
+      <div id="leaderboard" class="scoresgrid" style="margin-top:14px"></div>
+    </section>
+    <section class="card">
+      <h2>Strafpunten invoeren</h2>
+      <div class="sub" style="margin-bottom:12px">Vul per speler de strafpunten van deze ronde in.</div>
+      <div id="roundInputs"></div>
+      <button id="saveRound" style="width:100%;margin-top:10px">Ronde opslaan</button>
+      <p class="note" style="margin-bottom:0">Je kunt een score ook op 0 laten staan. Scores zijn achteraf te corrigeren via de rondegeschiedenis.</p>
+    </section>
+    <section class="card">
+      <div class="scorehead"><h2>Rondegeschiedenis</h2><span class="sub" id="roundCount"></span></div>
+      <div id="history"></div>
+    </section>
+    <div class="actions">
+      <button class="secondary" id="export">Exporteer back-up</button>
+      <button class="danger" id="newGame">Nieuw spel</button>
+    </div>
+    <label class="secondary" style="display:block;text-align:center;border:1px solid var(--line);border-radius:12px;padding:11px;margin-top:9px">Back-up terugzetten <input id="importFile" type="file" accept="application/json" style="display:none"></label>
+  </section>
+  <div class="foot">Je scores blijven op dit apparaat. Maak af en toe een back-up.</div>
+</main>
+<script>
+const KEY='take5-scorekeeper-v1';
+let state=load();
+const $=id=>document.getElementById(id);
+function load(){try{return JSON.parse(localStorage.getItem(KEY))}catch{return null}}
+function persist(){localStorage.setItem(KEY,JSON.stringify(state))}
+function totals(){return state.players.map(p=>({...p,total:state.rounds.reduce((s,r)=>s+(Number(r.scores[p.id])||0),0)}))}
+function outcome(p,total){
+ if(state.mode==='win' && total>=state.limit) return 'GEWONNEN';
+ if(state.mode==='out' && total>=state.limit) return 'AF';
+ return '';
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function show(){
+ $('setup').classList.toggle('hidden',!!state);
+ $('game').classList.toggle('hidden',!state);
+ if(!state)return;
+ const ts=totals().sort((a,b)=>a.total-b.total);
+ $('gameinfo').textContent=`Limiet ${state.limit} · ${state.mode==='out'?'Afvalmodus':'Winmodus'}`;
+ $('leaderboard').innerHTML=ts.map((p,i)=>`<div class="card" style="padding:12px;margin:0"><div class="rank">#${i+1}</div><div style="font-weight:700;margin:4px 0">${esc(p.name)}</div><div class="score">${p.total}</div><div class="${outcome(p,p.total)==='GEWONNEN'?'status winner':'status'}">${outcome(p,p.total)}</div></div>`).join('');
+ $('roundInputs').innerHTML=state.players.map(p=>`<div class="roundentry"><div>${esc(p.name)}${outcome(p,totals().find(x=>x.id===p.id).total)?' · '+outcome(p,totals().find(x=>x.id===p.id).total):''}</div><input type="number" min="0" step="1" inputmode="numeric" value="0" data-player="${p.id}" aria-label="Strafpunten ${esc(p.name)}"></div>`).join('');
+ $('roundCount').textContent=`${state.rounds.length} rondes`;
+ $('history').innerHTML=state.rounds.length? [...state.rounds].map((r,i)=>`<div class="round"><div class="roundtitle"><span>Ronde ${i+1}</span><button class="secondary" style="min-height:32px;padding:5px 9px;font-size:12px" data-edit="${r.id}">Wijzigen</button></div>${state.players.map(p=>`<div style="display:flex;justify-content:space-between;font-size:14px;padding:3px 0"><span>${esc(p.name)}</span><b>${Number(r.scores[p.id])||0}</b></div>`).join('')}</div>`).join(''):'<div class="empty">Nog geen rondes gespeeld.</div>';
+}
+$('start').onclick=()=>{
+ const names=$('names').value.split('\n').map(x=>x.trim()).filter(Boolean);
+ if(names.length<2){alert('Voer minimaal twee spelers in.');return}
+ if(new Set(names.map(n=>n.toLowerCase())).size!==names.length){alert('Gebruik unieke spelersnamen.');return}
+ const limit=Math.max(1,Number($('limit').value)||66);
+ state={limit,mode:$('mode').value,players:names.map((name,i)=>({id:'p'+Date.now()+i,name})),rounds:[]};persist();show();
+};
+$('saveRound').onclick=()=>{
+ const scores={};document.querySelectorAll('[data-player]').forEach(el=>scores[el.dataset.player]=Math.max(0,Math.floor(Number(el.value)||0)));
+ state.rounds.push({id:'r'+Date.now(),scores});persist();show();
+};
+$('editSetup').onclick=()=>{
+ if(!confirm('Instellingen wijzigen betekent een nieuw spel starten. De huidige wedstrijd blijft alleen in een back-up bewaard. Exporteer eerst als je deze wilt bewaren.'))return;
+ state=null;show();
+};
+$('newGame').onclick=()=>{
+ if(!confirm('Een nieuw spel starten? Exporteer eerst een back-up als je deze wedstrijd wilt bewaren.'))return;
+ state=null;localStorage.removeItem(KEY);show();
+};
+$('history').onclick=e=>{
+ const id=e.target.dataset.edit;if(!id)return;
+ const r=state.rounds.find(x=>x.id===id);if(!r)return;
+ for(const p of state.players){const v=prompt(`Strafpunten voor ${p.name} in deze ronde:`,r.scores[p.id]??0);if(v===null)return;r.scores[p.id]=Math.max(0,Math.floor(Number(v)||0))}
+ persist();show();
+};
+$('export').onclick=()=>{
+ const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='take5-backup.json';a.click();URL.revokeObjectURL(url);
+};
+$('importFile').onchange=async e=>{
+ const f=e.target.files[0];if(!f)return;
+ try{const x=JSON.parse(await f.text());if(!x.players||!x.rounds||!x.limit)throw Error();state=x;persist();show();alert('Back-up teruggezet.')}catch{alert('Dit bestand is geen geldige Take 5-back-up.')}
+ e.target.value='';
+};
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+$('connection').textContent=navigator.onLine?'Online · offline beschikbaar':'Offline';
+window.addEventListener('online',()=>$('connection').textContent='Online · offline beschikbaar');
+window.addEventListener('offline',()=>$('connection').textContent='Offline');
+show();
+</script>
+</body>
+</html>
