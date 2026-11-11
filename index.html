@@ -1,37 +1,21 @@
 <!doctype html>
-<html lang="nl">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f5f5f7">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Spellen">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="./icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css">
-  <title>Spellen · Scorekeeper</title>
-</head>
-<body>
-  <main class="app-shell">
-    <header class="app-header">
-      <button class="brand-button" id="homeButton" aria-label="Naar spellen"><span class="brand-mark">S</span><span><strong>Spellen</strong><small>Scorekeeper</small></span></button>
-      <span class="connection-pill" id="connection">Offline klaar</span>
-    </header>
-    <section id="homeScreen" class="screen">
-      <div class="page-heading"><p class="eyebrow">JOUW SPELAVOND</p><h1>Kies een spel</h1><p class="muted">Kies wat jullie gaan spelen. Meer spellen volgen.</p></div>
-      <div id="gameCatalog" class="game-catalog"></div>
-      <section class="history-teaser card"><div class="section-heading"><div><p class="eyebrow">BEWAARD OP DIT APPARAAT</p><h2>Spelgeschiedenis</h2></div><span id="archiveCount" class="count-pill">0</span></div><div id="archiveList" class="archive-list"></div><div class="archive-actions"><button class="button button-secondary button-small" id="exportAll">Back-up exporteren</button><label class="button button-secondary button-small file-button">Back-up terugzetten<input id="importAll" type="file" accept="application/json"></label></div></section>
-    </section>
-    <section id="rulesScreen" class="screen hidden"><button class="back-button" data-go="home">‹ Spellen</button><div id="rulesContent"></div></section>
-    <section id="setupScreen" class="screen hidden">
-      <button class="back-button" id="backToRules">‹ Speluitleg</button><div class="page-heading compact-heading"><p class="eyebrow">NIEUWE WEDSTRIJD</p><h1>Wie spelen er mee?</h1><p class="muted">Voeg minimaal twee spelers toe. Namen kun je later aanpassen door een nieuw spel te starten.</p></div>
-      <section class="card"><label class="field-label" for="playerNames">Spelersnamen · één per regel</label><textarea id="playerNames" rows="5" placeholder="Bijvoorbeeld&#10;Dennis&#10;Sanne&#10;Tom"></textarea><div class="form-grid"><div><label class="field-label" for="pointLimit">Puntenlimiet</label><input id="pointLimit" type="number" min="1" inputmode="numeric" value="66"></div><div><label class="field-label" for="gameMode">Spelmodus</label><select id="gameMode"><option value="out">Afvalmodus</option><option value="win">Winmodus</option></select></div></div><p class="helper" id="modeHelp">Afvalmodus: wie de limiet bereikt, ligt uit het spel. De laatste overgebleven speler wint.</p><button class="button button-primary button-full" id="startGame">Start spel <span>→</span></button></section>
-    </section>
-    <section id="gameScreen" class="screen hidden"><div class="game-topline"><button class="back-button" id="leaveGame">‹ Spellen</button><span id="gameMeta" class="count-pill"></span></div><div class="page-heading compact-heading"><p class="eyebrow" id="activeGameEyebrow">TAKE 5</p><h1>Tussenstand</h1><p class="muted" id="gameSummary"></p></div><section class="score-list" id="leaderboard"></section><section class="card score-entry-card"><div class="section-heading"><div><p class="eyebrow">NIEUWE RONDE</p><h2>Strafpunten invoeren</h2></div><span class="count-pill" id="roundCount"></span></div><p class="helper">Vul per actieve speler de strafpunten van deze ronde in. Spelers die uitgeschakeld zijn, kunnen geen punten meer krijgen.</p><div id="roundInputs"></div><button class="button button-primary button-full" id="saveRound">Ronde opslaan</button></section><section class="card"><div class="section-heading"><div><p class="eyebrow">OVERZICHT</p><h2>Rondegeschiedenis</h2></div></div><div id="roundHistory"></div></section><div class="game-footer-actions"><button class="button button-secondary" id="exportCurrent">Back-up</button><button class="button button-secondary" id="newGame">Nieuw spel</button></div></section>
-    <div id="eventModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="eventTitle"><div class="modal-backdrop"></div><div class="modal-card"><div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div><div class="modal-symbol" id="eventSymbol"></div><p class="eyebrow" id="eventEyebrow">SPELSTATUS</p><h2 id="eventTitle"></h2><p class="modal-player" id="eventPlayer"></p><p class="modal-score" id="eventScore"></p><p class="modal-message" id="eventMessage"></p><button class="button button-primary button-full" id="eventConfirm">Verder spelen</button></div></div>
-    <div class="toast hidden" id="toast" role="status"></div><footer class="app-footer">Je gegevens worden lokaal op dit apparaat bewaard.</footer>
-  </main>
-  <script src="./games/take5.js"></script><script src="./app.js"></script>
-</body>
-</html>
+<html lang="nl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f5f7"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Spellen">
+<link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml"><link rel="stylesheet" href="./styles.css">
+<title>Spellen · Scorekeeper</title></head><body><main class="app-shell">
+<header class="app-header"><button class="brand-button" id="homeButton" aria-label="Naar spellen"><span class="brand-mark">S</span><span><strong>Spellen</strong><small>Scorekeeper</small></span></button><span class="connection-pill" id="connection">Offline klaar</span></header>
+<section id="homeScreen" class="screen"><div class="page-heading"><p class="eyebrow">JOUW SPELAVOND</p><h1>Kies een spel</h1><p class="muted">Kies wat jullie gaan spelen. Meer spellen volgen.</p></div><div id="gameCatalog" class="game-catalog"></div>
+<section class="history-teaser card"><div class="section-heading"><div><p class="eyebrow">BEWAARD OP DIT APPARAAT</p><h2>Spelgeschiedenis</h2></div><span id="archiveCount" class="count-pill">0</span></div><div id="archiveList" class="archive-list"></div><div class="archive-actions"><button class="button button-secondary button-small" id="exportAll">Back-up exporteren</button><label class="button button-secondary button-small file-button">Back-up terugzetten<input id="importAll" type="file" accept="application/json"></label></div></section></section>
+<section id="rulesScreen" class="screen hidden"><button class="back-button" data-go="home">‹ Spellen</button><div id="rulesContent"></div></section>
+<section id="setupScreen" class="screen hidden"><button class="back-button" id="backToRules">‹ Speluitleg</button><div class="page-heading compact-heading"><p class="eyebrow">NIEUWE WEDSTRIJD</p><h1>Wie spelen er mee?</h1><p class="muted">Voeg minimaal twee spelers toe.</p></div>
+<section class="card"><label class="field-label" for="playerNames">Spelersnamen · één per regel</label><textarea id="playerNames" rows="5" placeholder="Speler 1&#10;Speler 2&#10;Speler 3" autocomplete="off" autocapitalize="words"></textarea>
+<div class="form-grid"><div><label class="field-label" for="pointLimit">Puntenlimiet</label><input id="pointLimit" type="number" min="1" inputmode="numeric" value="66"></div><div><label class="field-label" for="gameMode">Spelmodus</label><select id="gameMode"><option value="out">Afvalmodus</option><option value="win">Winmodus</option></select></div></div>
+<p class="helper" id="modeHelp">Afvalmodus: wie de limiet bereikt, ligt uit het spel. De laatste overgebleven speler wint.</p><button class="button button-primary button-full" id="startGame">Start spel <span>→</span></button></section></section>
+<section id="gameScreen" class="screen hidden"><div class="game-topline"><button class="back-button" id="leaveGame">‹ Spellen</button><span id="gameMeta" class="count-pill"></span></div><div class="page-heading compact-heading"><p class="eyebrow" id="activeGameEyebrow">TAKE 5</p><h1>Tussenstand</h1><p class="muted" id="gameSummary"></p></div>
+<section class="score-list" id="leaderboard"></section><section class="card score-entry-card"><div class="section-heading"><div><p class="eyebrow">NIEUWE RONDE</p><h2>Strafpunten invoeren</h2></div><span class="count-pill" id="roundCount"></span></div><p class="helper">Vul per actieve speler de strafpunten van deze ronde in. Laat velden leeg bij 0 punten.</p><div id="roundInputs"></div><button class="button button-primary button-full" id="saveRound">Ronde opslaan</button></section>
+<section class="card"><div class="section-heading"><div><p class="eyebrow">OVERZICHT</p><h2>Rondegeschiedenis</h2></div></div><div id="roundHistory"></div></section><div class="game-footer-actions"><button class="button button-secondary" id="exportCurrent">Back-up</button><button class="button button-secondary" id="newGame">Nieuw spel</button></div></section>
+<div id="eventModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="eventTitle"><div class="modal-backdrop"></div><div class="modal-card"><div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div><div class="modal-symbol" id="eventSymbol"></div><p class="eyebrow" id="eventEyebrow">SPELSTATUS</p><h2 id="eventTitle"></h2><p class="modal-player" id="eventPlayer"></p><p class="modal-score" id="eventScore"></p><p class="modal-message" id="eventMessage"></p><button class="button button-primary button-full" id="eventConfirm">Verder spelen</button></div></div>
+<div class="toast hidden" id="toast" role="status"></div><footer class="app-footer">Je gegevens worden lokaal op dit apparaat bewaard.</footer></main>
+<script src="./games/take5.js"></script><script src="./games/toepen.js"></script><script src="./app.js"></script></body></html>
