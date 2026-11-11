@@ -19,7 +19,7 @@ function renderCatalog(){
 function renderRules(){
  const m=mod(selectedGameId);if(!m)return;
  $("rulesContent").innerHTML=`<div class="rules-hero"><div class="rules-icon">${esc(m.icon||"•")}</div><p class="eyebrow">SPELINTRODUCTIE</p><h1>${esc(m.name)}</h1><p>${esc(m.tagline||"")}</p></div><section class="card"><p class="eyebrow">DE BELANGRIJKSTE REGELS</p><ol class="rule-list">${m.rules.map(r=>`<li>${esc(r)}</li>`).join("")}</ol>${m.rulesNote?`<p class="rules-footnote">${esc(m.rulesNote)}</p>`:""}</section><button class="button button-primary button-full" id="continueSetup">Spelers instellen <span>→</span></button>`;
- $("continueSetup").onclick=()=>{$("pointLimit").value=m.defaultLimit||66;$("gameMode").innerHTML=(m.modes||[{value:"out",label:"Afvalmodus"},{value:"win",label:"Winmodus"}]).map(x=>`<option value="${esc(x.value)}">${esc(x.label)}</option>`).join("");$("playerNames").value="";show("setupScreen");};
+ $("continueSetup").onclick=()=>{$("pointLimit").value=m.defaultLimit||66;$("gameMode").innerHTML=(m.modes||[{value:"out",label:"Afvalmodus"},{value:"win",label:"Winmodus"}]).map(x=>`<option value="${esc(x.value)}">${esc(x.label)}</option>`).join("");$("playerNames").value="";$("setupOptions").classList.toggle("hidden",!!m.hideSetupOptions);$("modeHelp").classList.toggle("hidden",!!m.hideSetupOptions);if(m.hideSetupOptions){$("modeHelp").textContent="";}show("setupScreen");};
 }
 function renderArchive(){
  $("archiveCount").textContent=archive.length;
@@ -27,6 +27,9 @@ function renderArchive(){
 }
 function renderGame(){
  if(!currentGame)return;const m=mod(currentGame.gameId||"take5");if(!m)return;
+ const standard=$("standardGameContent"),maxen=$("maxenGame");
+ if(typeof m.render==="function"){standard.classList.add("hidden");maxen.classList.remove("hidden");$("activeGameEyebrow").textContent=m.name.toUpperCase();$("gameMeta").textContent=`${currentGame.rounds.length} rondes`; $("gameSummary").textContent="Twee dobbelstenen · maximaal drie worpen";m.render(currentGame,maxen,{persist,rerender:renderGame,exportBackup:()=>exportData(currentGame,"scorekeeper-maxen-backup.json")});return;}
+ maxen.classList.add("hidden");standard.classList.remove("hidden");
  const list=totals().sort((a,b)=>a.total-b.total),w=winner();
  $("activeGameEyebrow").textContent=m.name.toUpperCase();$("gameMeta").textContent=`${currentGame.rounds.length} rondes`;
  $("gameSummary").textContent=`Limiet ${currentGame.limit} · ${currentGame.mode==="out"?"Afvalmodus":"Winmodus"}`;$("roundCount").textContent=`${currentGame.rounds.length} rondes`;
@@ -42,7 +45,8 @@ function startGame(){
  const limit=Math.max(1,Number($("pointLimit").value)||m.defaultLimit||66);
  if(currentGame&&!confirm("Er is al een spel bezig. Start je een nieuw spel, dan wordt het huidige spel afgesloten en bewaard in de geschiedenis."))return;
  if(currentGame)archiveCurrent(false);
- currentGame={gameId:selectedGameId,gameName:m.name,limit,mode:$("gameMode").value,players:names.map((name,i)=>({id:`p${Date.now()}${i}`,name})),rounds:[],createdAt:new Date().toISOString()};
+ if(typeof m.createGame==="function"){currentGame=m.createGame(names);}
+ else{currentGame={gameId:selectedGameId,gameName:m.name,limit,mode:$("gameMode").value,players:names.map((name,i)=>({id:`p${Date.now()}${i}`,name})),rounds:[],createdAt:new Date().toISOString()};}
  persist();renderGame();renderArchive();show("gameScreen");
 }
 function archiveCurrent(completed=true){
@@ -60,7 +64,7 @@ function saveRound(){
 }
 function editRound(id){const r=currentGame.rounds.find(x=>x.id===id);if(!r)return;for(const p of currentGame.players){const v=prompt(`Strafpunten voor ${p.name} in deze ronde:`,r.scores[p.id]??0);if(v===null)return;r.scores[p.id]=Math.max(0,Math.floor(Number(v)||0));}persist();renderGame();}
 function exportData(data,name){const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-function importData(file){const reader=new FileReader();reader.onload=()=>{try{const d=JSON.parse(reader.result);if(d.players&&d.rounds&&d.limit){currentGame={...d,gameId:d.gameId||"take5",gameName:d.gameName||"Take 5"};persist();renderGame();show("gameScreen");toast("Back-up teruggezet.");}else if(Array.isArray(d.archive)){archive=d.archive;if(d.current)currentGame=d.current;persist();renderArchive();toast("Back-up teruggezet.");}else throw Error();}catch{alert("Dit bestand is geen geldige scorekeeper-back-up.");}};reader.readAsText(file);}
+function importData(file){const reader=new FileReader();reader.onload=()=>{try{const d=JSON.parse(reader.result);if(d.players&&d.rounds&&(d.limit||d.gameId==="maxen")){currentGame={...d,gameId:d.gameId||"take5",gameName:d.gameName||"Take 5"};persist();renderGame();show("gameScreen");toast("Back-up teruggezet.");}else if(Array.isArray(d.archive)){archive=d.archive;if(d.current)currentGame=d.current;persist();renderArchive();toast("Back-up teruggezet.");}else throw Error();}catch{alert("Dit bestand is geen geldige scorekeeper-back-up.");}};reader.readAsText(file);}
 function toast(msg){$("toast").textContent=msg;$("toast").classList.remove("hidden");setTimeout(()=>$("toast").classList.add("hidden"),2200);}
 $("homeButton").onclick=()=>{renderCatalog();renderArchive();show("homeScreen");};
 $("backToRules").onclick=()=>{renderRules();show("rulesScreen");};$("startGame").onclick=startGame;$("saveRound").onclick=saveRound;

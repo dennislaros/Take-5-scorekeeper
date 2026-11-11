@@ -1,0 +1,38 @@
+MAXEN-UPDATE VOOR SPELLEN SCOREKEEPER
+
+Inhoud van deze ZIP:
+- index.html       vervangen in de hoofdmap van je repository
+- app.js           vervangen in de hoofdmap
+- styles.css       vervangen in de hoofdmap (gelijke tegels voor alle spellen + Maxen-styling)
+- sw.js            vervangen in de hoofdmap (cacheversie v5)
+- games/maxen.js   nieuw bestand in de bestaande map games
+
+Laat deze bestaande bestanden staan:
+- games/take5.js
+- games/toepen.js
+- manifest.webmanifest
+- icon.svg
+
+INSTALLEREN VIA GITHUB OP IPHONE / COMPUTER
+1. Open je repository: dennislaros/Take-5-scorekeeper.
+2. Vervang index.html, app.js, styles.css en sw.js in de hoofdmap door de versies uit deze ZIP.
+3. Vervang ook manifest.webmanifest in de hoofdmap.
+4. Open de map games en voeg maxen.js toe.
+5. Commit de wijzigingen naar main.
+6. Open daarna https://dennislaros.github.io/Take-5-scorekeeper/ opnieuw. Als Safari nog de oude versie toont, sluit het tabblad volledig en open de app opnieuw. Verwijder niet je websitegegevens; daarin staat je lokale spelgeschiedenis.
+
+MAXEN - INGEBOUWDE SPELREGELS
+- Eerste speler kiest per ronde 1, 2 of 3 worpen als maximum.
+- Iedere speler mag eerder stoppen via 'Score akkoord'.
+- De hoogste worp van elke speler telt.
+- 2 + 1 is Max (21) en is de hoogste worp.
+- Dubbel 1 t/m dubbel 6 wordt 100 t/m 600.
+- Iedere Max (21) verdubbelt opnieuw de basis-slokken van de ronde: 1, 2, 4, 8, ...
+- De speler(s) met de laagste eindworp drinken de basis-slokken.
+- De laatste speler die 31 gooide drinkt telkens 1 extra slok wanneer een andere speler daarna 100 t/m 600 gooit.
+- De 31-slokken komen boven op eventuele verliezersslokken.
+- Bij een gelijke laagste eindworp drinken alle spelers met die laagste score.
+
+De app bewaart Maxen-rondes lokaal op het apparaat. De bestaande opslag voor Take 5 en Toepen blijft behouden.
+
+Let op: Maxen is een drankspel. Speel verantwoord; de app telt slokken maar controleert geen alcoholconsumptie.
