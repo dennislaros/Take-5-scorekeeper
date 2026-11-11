@@ -9,9 +9,9 @@ window.GameModules.take5 = {
   available: true,
   defaultLimit: 66,
   rules: [
-    "Iedere speler krijgt kaarten en speelt elke ronde één kaart tegelijk.",
+    "Iedere speler krijgt 5 kaarten en speelt elke ronde 1 kaart tegelijk.",
     "Kaarten worden op volgorde aangelegd bij de rij met het dichtstbijzijnde lagere kaartnummer.",
-    "De zesde kaart in een rij betekent dat je de vijf kaarten ervoor moet pakken.",
+    "Leg je de zesde kaart aan in een rij dan moet je de 5 kaarten welke ervoor liggen pakken, jou aangelgede kaart blijft liggen.",
     "De koeienkoppen op die kaarten tellen als strafpunten.",
     "In afvalmodus lig je eruit zodra je de ingestelde puntenlimiet bereikt. De laatste speler wint."
   ],
