@@ -1,4 +1,4 @@
-const CACHE = "scorekeeper-v2";
+const CACHE = "scorekeeper-v3";
 const FILES = ["./","./index.html","./styles.css","./app.js","./games/take5.js","./manifest.webmanifest","./icon.svg"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting()));
