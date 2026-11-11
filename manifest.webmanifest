@@ -1,12 +1,12 @@
 {
-  "name": "Take 5 Scorekeeper",
-  "short_name": "Take 5",
+  "name": "Spellen Scorekeeper",
+  "short_name": "Spellen",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#101713",
-  "theme_color": "#17221d",
-  "description": "Lokale Take 5-scorekeeper die offline werkt.",
+  "background_color": "#171916",
+  "theme_color": "#171916",
+  "description": "Een offline scorekeeper voor Take 5 en toekomstige spellen.",
   "icons": [
     {
       "src": "./icon.svg",
